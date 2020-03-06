@@ -17,6 +17,8 @@ namespace TwitchQuestions
         
         public bool setChannel = false;
         public bool Polling = false;
+        public bool WhisperVote = false;
+        public bool AutoResults = false;
 
         public string channel_name;
         public string BOT_ACCESS_TOKEN;
@@ -45,7 +47,6 @@ namespace TwitchQuestions
 
             BOT_ACCESS_TOKEN = secrets.Value<string>("BOT_ACCESS_TOKEN");
             BOT_CHANNEL_NAME = secrets.Value<string>("BOT_CHANNEL_NAME");
-
         }
 
         /// <summary>
@@ -86,6 +87,8 @@ namespace TwitchQuestions
             //subs to new chat messsage
             client.OnMessageReceived += MyMessageRecieved;
 
+            client.OnWhisperReceived += WhisperRecieved;
+
             //subs to client connected
             client.OnConnected += Client_OnConnected;
 
@@ -94,6 +97,38 @@ namespace TwitchQuestions
 
             //conencts client to specified twitch channel
             client.Connect();
+        }
+
+        private void WhisperRecieved(object sender, OnWhisperReceivedArgs e)
+        {
+            //if not polling for answers, don't do anything
+            if (!Polling)
+            {
+                return;
+            }
+
+            if (WhisperVote == false)
+            {
+                return;
+            }
+
+
+            //if the user has not already voted
+            if (!UsersThatHaveVoted.Contains(e.WhisperMessage.Username))
+            {
+                //and they have typed an allowed answer
+                if (Results.ContainsKey(e.WhisperMessage.Message.ToLower()))
+                {
+                    //increase answers count
+                    Results[e.WhisperMessage.Message.ToLower()]++;
+
+                    //add user to voted list
+                    UsersThatHaveVoted.Add(e.WhisperMessage.Username);
+
+                    //and update results textbox
+                    Invoke(new Action(() => ResultsBox.Text = string.Join(Environment.NewLine, Results).Replace('[', ' ').Replace(']', ' ')));
+                }
+            }
         }
 
         //on client log, print log text in output window for debugging purposes
@@ -107,6 +142,11 @@ namespace TwitchQuestions
         {
             //if not polling for answers, don't do anything
             if (!Polling)
+            {
+                return;
+            }
+
+            if (WhisperVote == true)
             {
                 return;
             }
@@ -163,6 +203,12 @@ namespace TwitchQuestions
             //channel specified by user input box
             channel_name = channelInput.Text;
 
+            if (channel_name == "")
+            {
+                richTextBox1.Text = "   \n            ERROR MADE \n \n     ENTER CHANNEL NAME";
+                return;
+            }
+
             GetChat();
         }
 
@@ -212,9 +258,26 @@ namespace TwitchQuestions
             return result;
         }
 
+        //converts a dictionary to a single string
+        private string DictToText(Dictionary<string, int> dict)
+        {
+            string dictToString = "";
+
+            foreach (var item in dict.Keys)
+            {
+                dictToString = (dictToString + item + ": " + dict[item].ToString() + ", ") ;
+            }
+
+            return dictToString;
+        }
+
         //calls the start question method when ask question button is pressed
         private void button1_Click(object sender, EventArgs e)
         {
+            WhisperVote = VoteByWhisper.Checked;
+
+            AutoResults = AutoPostResults.Checked;
+
             startQuestion();
         }
 
@@ -224,6 +287,9 @@ namespace TwitchQuestions
         /// </summary>
         private void startQuestion()
         {
+            //clear results, ready for next question
+            Results.Clear();
+
             //Splits up the allowed answers text box text
             //Will be used to set voting options
             AllowedAnswers = AllowedAnswersBox.Text.Split(',');
@@ -256,7 +322,25 @@ namespace TwitchQuestions
             timer2.Enabled = true;
 
             //post the question in chat and post the options for voting in the poll
-            client.SendMessage(client.JoinedChannels[0], QuestionBox.Text + " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ !vote " + AllowedAnswersBox.Text);
+            try
+            {
+                client.SendMessage(client.JoinedChannels[0], QuestionBox.Text);
+            }
+            catch (Exception)
+            {
+                richTextBox1.Text = "   \n      ERROR MADE \n \n     CLICK CONNECT";
+                return;
+            }
+
+            if (WhisperVote)
+            {
+                client.SendMessage(client.JoinedChannels[0], "Whisper me your vote [ /w CatchAVote ... ]");
+                client.SendMessage(client.JoinedChannels[0], "Voting options: " + AllowedAnswersBox.Text);
+            }
+            else
+            {
+                client.SendMessage(client.JoinedChannels[0], "!vote " + AllowedAnswersBox.Text);
+            }
         }
 
         /// <summary>
@@ -278,7 +362,13 @@ namespace TwitchQuestions
             if (Polling)
             {
                 //tell chat polling has ended
-                client.SendMessage(client.JoinedChannels[0], "time's up!");
+                client.SendMessage(client.JoinedChannels[0], "Voting has ended!");
+
+                if (AutoResults)
+                {
+                    //post results if auto post is enabled
+                    PostResultsInChat();
+                }
 
                 //reset timer value
                 numericUpDown1.Value = timerLength;
@@ -292,10 +382,13 @@ namespace TwitchQuestions
 
                 //clear list of users that voted
                 UsersThatHaveVoted.Clear();
-
-                //clear results, ready for next question
-                Results.Clear();
             }
+        }
+
+        private void PostResultsInChat()
+        {
+            //post results in chat
+            client.SendMessage(client.JoinedChannels[0], DictToText(Results));
         }
 
         //timer that triggers every second
@@ -313,7 +406,7 @@ namespace TwitchQuestions
         public void StopQuestion()
         {
             //tell chat poll has ended prematurely
-            client.SendMessage(client.JoinedChannels[0], "Poll has been cancelled");
+            client.SendMessage(client.JoinedChannels[0], "Vote has been cancelled");
 
             //reset timer value
             numericUpDown1.Value = timerLength;
@@ -339,6 +432,16 @@ namespace TwitchQuestions
             {
                 StopQuestion();
             }
+        }
+
+        private void PostResults_Click(object sender, EventArgs e)
+        {
+            PostResultsInChat();
+        }
+
+        private void VoteByWhisper_CheckedChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }

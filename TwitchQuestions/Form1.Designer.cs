@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.channelInput = new System.Windows.Forms.TextBox();
             this.connectButton = new System.Windows.Forms.Button();
@@ -47,6 +48,9 @@
             this.ResultsBox = new System.Windows.Forms.RichTextBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.StopButton = new System.Windows.Forms.Button();
+            this.VoteByWhisper = new System.Windows.Forms.CheckBox();
+            this.PostResults = new System.Windows.Forms.Button();
+            this.AutoPostResults = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -205,11 +209,46 @@
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
+            // VoteByWhisper
+            // 
+            this.VoteByWhisper.AutoSize = true;
+            this.VoteByWhisper.Location = new System.Drawing.Point(316, 72);
+            this.VoteByWhisper.Name = "VoteByWhisper";
+            this.VoteByWhisper.Size = new System.Drawing.Size(101, 17);
+            this.VoteByWhisper.TabIndex = 16;
+            this.VoteByWhisper.Text = "Vote by whisper";
+            this.VoteByWhisper.UseVisualStyleBackColor = true;
+            this.VoteByWhisper.CheckedChanged += new System.EventHandler(this.VoteByWhisper_CheckedChanged);
+            // 
+            // PostResults
+            // 
+            this.PostResults.Location = new System.Drawing.Point(436, 363);
+            this.PostResults.Name = "PostResults";
+            this.PostResults.Size = new System.Drawing.Size(75, 23);
+            this.PostResults.TabIndex = 17;
+            this.PostResults.Text = "Post Results";
+            this.PostResults.UseVisualStyleBackColor = true;
+            this.PostResults.Click += new System.EventHandler(this.PostResults_Click);
+            // 
+            // AutoPostResults
+            // 
+            this.AutoPostResults.AutoSize = true;
+            this.AutoPostResults.Location = new System.Drawing.Point(315, 96);
+            this.AutoPostResults.Name = "AutoPostResults";
+            this.AutoPostResults.Size = new System.Drawing.Size(110, 17);
+            this.AutoPostResults.TabIndex = 18;
+            this.AutoPostResults.Text = "Auto Post Results";
+            this.AutoPostResults.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.AutoPostResults.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(520, 395);
+            this.Controls.Add(this.AutoPostResults);
+            this.Controls.Add(this.PostResults);
+            this.Controls.Add(this.VoteByWhisper);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.ResultsBox);
             this.Controls.Add(this.label6);
@@ -227,6 +266,7 @@
             this.Controls.Add(this.channelInput);
             this.Controls.Add(this.richTextBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Twitch Questions";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
@@ -256,6 +296,9 @@
         private System.Windows.Forms.RichTextBox ResultsBox;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Button StopButton;
+        private System.Windows.Forms.CheckBox VoteByWhisper;
+        private System.Windows.Forms.Button PostResults;
+        private System.Windows.Forms.CheckBox AutoPostResults;
     }
 }
 
