@@ -4,7 +4,7 @@ Tool that allows twitch chat to vote on questions
 ![Screenshot](./TQ2.png)
 
 # How to use
-- Download the exe and json files from the release page [HERE](https://github.com/Ryason/Twitch-Questions/releases/tag/v0.02)
+- Download the exe and json files from the release page [HERE](https://github.com/Ryason/Twitch-Questions/releases/tag/v0.03)
 - The Secrets.json file needs to be in the same directory as the .exe
 - Open the json file with a text editor
 - Add your Access token from https://twitchtokengenerator.com/ to the BOT_ACCESS_TOKEN part of the json file
