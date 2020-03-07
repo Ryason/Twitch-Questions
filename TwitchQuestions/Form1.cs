@@ -334,7 +334,7 @@ namespace TwitchQuestions
 
             if (WhisperVote)
             {
-                client.SendMessage(client.JoinedChannels[0], "Whisper me your vote [ /w CatchAVote ... ]");
+                client.SendMessage(client.JoinedChannels[0], "Whisper me your vote");
                 client.SendMessage(client.JoinedChannels[0], "Voting options: " + AllowedAnswersBox.Text);
             }
             else
