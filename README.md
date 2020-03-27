@@ -1,7 +1,7 @@
 # Twitch-Questions
 Tool that allows twitch chat to vote on questions
 
-![Screenshot](./programimage.png)
+![Screenshot](./ProgramImage.PNG)
 
 # How to use
 - Download the exe and json files from the release page [HERE](https://github.com/Ryason/Twitch-Questions/releases/tag/v0.03)
