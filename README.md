@@ -7,7 +7,7 @@ Tool that allows twitch chat to vote on questions
 - Download the exe and json files from the release page [HERE](https://github.com/Ryason/Twitch-Questions/releases/tag/v0.03)
 - The Secrets.json file needs to be in the same directory as the .exe
 - Open the json file with a text editor
-- Add your Access token from https://twitchtokengenerator.com/ to the BOT_ACCESS_TOKEN part of the json file
+- Add your Access token from https://twitchtokengenerator.com to the BOT_ACCESS_TOKEN part of the json file
 - Add the channel name associated with the access token to the BOT_CHANNEL_NAME part of the json file
 - Run the .exe
 - Enter the channel name you want to run the poll on into the input field
@@ -22,5 +22,5 @@ Tool that allows twitch chat to vote on questions
 - Users can only vote once
 - If the poll needs to be cancelled early, click the "STOP" button.
 - If you decide you want to post results to chat, you can press the "Post Results" button at any time.
-- The bot will post a message in chat once the allowed voting time has passed
+- The bot will post a message in chat once the allowed voting time has passed, if auto post results is enabled
 
